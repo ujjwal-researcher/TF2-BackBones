@@ -90,10 +90,40 @@ def conv_seq_3x3_branch(x,
 
     x = tf.concat(
         [y1, y2],
-        axis=utils.get_bn_axis(),
+        axis=utils.get_bn_axis(data_format=data_format),
         name='{}_concat'.format(base_name)
     )
     return x
+
+
+def incept_conv_1x1(x,
+                    num_filters,
+                    data_format,
+                    base_name
+
+                    ):
+    y = inception_conv(
+        x,
+        num_filters=num_filters,
+        kernel_size=1,
+        strides=1,
+        padding='valid',
+        data_format=data_format,
+        base_name=base_name
+    )
+    return y
+
+
+def conv_1x1_branch(x,
+                    num_filters,
+                    data_format,
+                    base_name
+                    ):
+    y = incept_conv_1x1(x,
+                        num_filters=num_filters,
+                        data_format=data_format,
+                        base_name=base_name)
+    return y
 
 
 def inception_init_block(x,
@@ -161,4 +191,39 @@ def inception_init_block(x,
         name='pool2'
     )(y)
 
+    return y
+
+
+def avg_pool_branch(x,
+                    num_filters,
+                    data_format,
+                    base_name
+                    ):
+    y = tf.keras.layers.AvgPool2D(
+        pool_size=3,
+        strides=1,
+        padding='same',
+        data_format=data_format,
+        name='{}/avgpool2d'.format(base_name)
+    )(x)
+
+    y = incept_conv_1x1(y,
+                        num_filters=num_filters,
+                        data_format=data_format,
+                        base_name=base_name)
+
+    return y
+
+
+def max_pool_branch(x,
+                    data_format,
+                    base_name
+                    ):
+    y = tf.keras.layers.MaxPool2D(
+        pool_size=3,
+        strides=2,
+        padding='valid',
+        data_format=data_format,
+        name=base_name
+    )(x)
     return y
