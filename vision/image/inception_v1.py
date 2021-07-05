@@ -52,14 +52,15 @@ def conv_seq_branch(x,
                            )(x)
     return x
 
-def conv_3x3_branch(x,
-                    num_filters,
-                    kernel_sizes,
-                    strides,
-                    paddings,
-                    data_format,
-                    base_name
-                    ):
+
+def conv_seq_3x3_branch(x,
+                        num_filters,
+                        kernel_sizes,
+                        strides,
+                        paddings,
+                        data_format,
+                        base_name
+                        ):
     for i, (filter_count, kernel_size, stride, padding) in enumerate(zip(
             num_filters, kernel_sizes, strides, paddings)):
         x = inception_conv(x,
@@ -69,18 +70,30 @@ def conv_3x3_branch(x,
                            padding=padding,
                            data_format=data_format,
                            base_name='{}_{}'.format(base_name, i + 1)
-                           ) (x)
-        out_channels = filter_count
+                           )(x)
+    y1 = inception_conv(x,
+                        num_filters=filter_count,
+                        kernel_size=(1, 3),
+                        strides=1,
+                        padding='same',
+                        data_format=data_format,
+                        base_name='{}_conv1x3'.format(base_name)
+                        )(x)
+    y2 = inception_conv(x,
+                        num_filters=filter_count,
+                        kernel_size=(3, 1),
+                        strides=1,
+                        padding='same',
+                        data_format=data_format,
+                        base_name='{}_conv3x1'.format(base_name)
+                        )(x)
 
-    x = inception_conv(x,
-                       num_filters=out_channels,
-                       kernel_size=(1,3),
-                       strides=1,
-                       padding='same',
-                       data_format=data_format,
-                       base_name='{}'
-
-                       )
+    x = tf.concat(
+        [y1, y2],
+        axis=utils.get_bn_axis(),
+        name='{}_concat'.format(base_name)
+    )
+    return x
 
 
 def inception_init_block(x,
