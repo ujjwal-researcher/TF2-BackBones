@@ -161,7 +161,7 @@ def get_vgg(
     return vgg_model
 
 
-def vgg_11(
+def vgg11(
         input_height,
         input_width,
         data_format,
@@ -178,7 +178,7 @@ def vgg_11(
     return model
 
 
-def vgg_13(
+def vgg13(
         input_height,
         input_width,
         data_format,
@@ -195,7 +195,7 @@ def vgg_13(
     return model
 
 
-def vgg_16(
+def vgg16(
         input_height,
         input_width,
         data_format,
@@ -212,7 +212,7 @@ def vgg_16(
     return model
 
 
-def vgg_19(
+def vgg19(
         input_height,
         input_width,
         data_format,
@@ -229,7 +229,7 @@ def vgg_19(
     return model
 
 
-def bn_vgg_11(
+def bn_vgg11(
         input_height,
         input_width,
         data_format,
@@ -248,7 +248,7 @@ def bn_vgg_11(
     return model
 
 
-def bn_vgg_13(
+def bn_vgg13(
         input_height,
         input_width,
         data_format,
@@ -267,7 +267,7 @@ def bn_vgg_13(
     return model
 
 
-def bn_vgg_16(
+def bn_vgg16(
         input_height,
         input_width,
         data_format,
@@ -286,7 +286,7 @@ def bn_vgg_16(
     return model
 
 
-def bn_vgg_19(
+def bn_vgg19(
         input_height,
         input_width,
         data_format,
@@ -305,7 +305,7 @@ def bn_vgg_19(
     return model
 
 
-def bn_vgg_11b(
+def bn_vgg11b(
         input_height,
         input_width,
         data_format,
@@ -324,7 +324,7 @@ def bn_vgg_11b(
     return model
 
 
-def bn_vgg_13b(
+def bn_vgg13b(
         input_height,
         input_width,
         data_format,
@@ -343,7 +343,7 @@ def bn_vgg_13b(
     return model
 
 
-def bn_vgg_16b(
+def bn_vgg16b(
         input_height,
         input_width,
         data_format,
@@ -353,7 +353,7 @@ def bn_vgg_16b(
         model_name='bn_vgg_16b',
         input_height=input_height,
         input_width=input_width,
-        blocks=11,
+        blocks=16,
         use_bn=True,
         use_bias=True,
         data_format=data_format,
@@ -362,7 +362,7 @@ def bn_vgg_16b(
     return model
 
 
-def bn_vgg_19b(
+def bn_vgg19b(
         input_height,
         input_width,
         data_format,
@@ -372,7 +372,7 @@ def bn_vgg_19b(
         model_name='bn_vgg_19b',
         input_height=input_height,
         input_width=input_width,
-        blocks=11,
+        blocks=19,
         use_bn=True,
         use_bias=True,
         data_format=data_format,
