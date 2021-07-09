@@ -19,7 +19,7 @@ def resblock(
         use_bias=use_bias,
         use_bn=use_bn,
         data_format=data_format,
-        base_name='{}/unit1'.format(base_name)
+        base_name='{}/conv1'.format(base_name)
     )
 
     y = conv3x3_block(
@@ -29,7 +29,7 @@ def resblock(
         use_bn=use_bn,
         activation=None,
         data_format=data_format,
-        base_name='{}/unit2'.format(base_name)
+        base_name='{}/conv2'.format(base_name)
     )
     return y
 
@@ -50,7 +50,7 @@ def resbottleneck(
                       num_filters=mid_filters,
                       strides=(strides if conv1_stride else 1),
                       data_format=data_format,
-                      base_name='{}/unit1'.format(base_name)
+                      base_name='{}/conv1'.format(base_name)
                       )
 
     y = conv3x3_block(
@@ -60,14 +60,14 @@ def resbottleneck(
         padding=padding,
         dilation=dilation,
         data_format=data_format,
-        base_name='{}/unit2'.format(base_name)
+        base_name='{}/conv2'.format(base_name)
     )
 
     y = conv1x1_block(y,
                       num_filters=num_filters,
                       activation=None,
                       data_format=data_format,
-                      base_name='{}/unit3'.format(base_name)
+                      base_name='{}/conv3'.format(base_name)
                       )
     return y
 
@@ -137,8 +137,9 @@ def resnetinitblock(x,
         x,
         num_filters=num_filters,
         strides=2,
+        padding='valid',
         data_format=data_format,
-        base_name='{}/unit1'.format(base_name)
+        base_name='{}/conv'.format(base_name)
     )
 
     y = tf.keras.layers.MaxPool2D(
@@ -169,7 +170,9 @@ def resnet(
         input_shape = (input_height, input_width, 3)
 
     x = tf.keras.Input(shape=input_shape, batch_size=None)
-    y = x
+    y = tf.keras.layers.ZeroPadding2D(padding=(3,3),
+                                      data_format=data_format,
+                                      name='conv1_pad')(x)
     y = resnetinitblock(
         y,
         num_filters=init_block_channels,
@@ -189,15 +192,17 @@ def resnet(
                 bottleneck=bottleneck,
                 conv1_stride=conv1_stride,
                 data_format=data_format,
-                base_name='{}/block{}'.format(base_name, i)
+                base_name='{}/stage{}/unit{}'.format(base_name, i+1,j+1)
             )
             in_channels = out_channels
-    y = tf.keras.layers.AveragePooling2D(
-        pool_size=7,
-        strides=1,
-        data_format=data_format,
-        name='{}/final_pool'.format(base_name)
-    )(y)
+    # y = tf.keras.layers.AveragePooling2D(
+    #     pool_size=7,
+    #     strides=1,
+    #     data_format=data_format,
+    #     name='{}/final_pool'.format(base_name)
+    # )(y)
+    y = tf.keras.layers.GlobalAvgPool2D(data_format=data_format, name='{'
+                                                                      '}/final_pool'.format(base_name))(y)
 
     if num_classes > 0:
         y = tf.keras.layers.Flatten(data_format=data_format, name='flatten')(y)

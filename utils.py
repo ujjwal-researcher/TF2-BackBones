@@ -65,7 +65,7 @@ def conv_block(x,
 
     if activation is not None:
         y = tf.keras.layers.Activation(activation=activation,
-                                       name='{}/conv_postact'.format(
+                                       name='{}/conv/conv_postact'.format(
                                            base_name))(y)
 
     return y
