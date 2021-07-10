@@ -50,6 +50,7 @@ def conv_block(x,
         strides=strides,
         padding=padding,
         dilation_rate=dilation,
+        activation=None,
         groups=groups,
         use_bias=use_bias,
         data_format=data_format,
@@ -59,6 +60,7 @@ def conv_block(x,
     if use_bn:
         y = tf.keras.layers.BatchNormalization(
             axis=get_channel_axis(data_format),
+            momentum=0.9,
             epsilon=bn_eps,
             name='{}/conv_bn'.format(base_name)
         )(y)
